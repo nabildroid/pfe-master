@@ -12,7 +12,7 @@ function generateRandomScheduler(targetIp: string) {
     const scheduler = {
         peaks: [] as any,
         duration: 60000, // 1 minute in milliseconds
-        ticker: Math.floor(Math.random() * 5000000) + 1,
+        ticker: Math.floor(Math.random() * 50) + 1,
         targetIP: targetIp // Add your target IP logic here
     };
 
