@@ -11,3 +11,8 @@ export function parseCookies(cookie: string) {
 }
 
 
+
+
+export async function delay(milliseconds: number) {
+    await new Promise(r => setTimeout(r, milliseconds));
+}

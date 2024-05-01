@@ -1,19 +1,12 @@
-import DiscoverFortigates from "./discovers/discoverFortigates";
-import Fortigate from "./repositories/fortigate";
 
 
 
-
-const aliveFortigates = await DiscoverFortigates();
-
-
-const [mainIP] = aliveFortigates;
-
-console.log(aliveFortigates)
-const left = new Fortigate(mainIP);
-
-await left.init();
+export function generateRandomConfig(length: number) {
 
 
-
-await left.setPortBandwidth(3, 5645);
+    const kb = 1000;
+    const mb = kb * 1000;
+    return Array(length).fill("").map(e =>
+        Math.floor(Math.random() * mb * 10) + kb
+    )
+}

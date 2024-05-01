@@ -20,7 +20,9 @@ export default async function DiscoverUbuntus() {
         }
     });
 
+    
     await Promise.all(fetchPromises);
+
 
 
     return aliveAddress

