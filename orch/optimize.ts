@@ -29,7 +29,7 @@ await Promise.all(foritgates.map(async f => {
 
 
 
-const datacenter_forigate_hostname = "left"
+const datacenter_forigate_hostname = "data-center"
 console.log("Searching for the Datacenter Forigate under the hostname=", datacenter_forigate_hostname);
 
 
@@ -40,6 +40,8 @@ if (!dcForitgate) {
     process.exit();
 }
 
+const agenceFortigates = foritgates.filter(e => e != dcForitgate);
+
 console.log("forigate (" + dcForitgate.hostname + ") found, ip=" + dcForitgate.ip)
 
 
@@ -49,48 +51,53 @@ console.log("forigate (" + dcForitgate.hostname + ") found, ip=" + dcForitgate.i
 
 async function optimizeDuringPeriod() {
     // start the abusers and keep it durring the entire period
-    await CommandAbusers("192.168.0.3");
-
+    await CommandAbusers("192.168.0.4");
     await delay(2000)
     // record the baseline (cpu utilization), ingress data in the datacenter (one minute)
 
 
     console.log("Recording the baseline")
-    const baseline = await recordDCForitageStats(60);
+    const baseline = await recordDCForitageStats(20);
     console.log("without Opimization", baseline.evaluate());
 
 
 
-    let ADNs = Array(6).fill("").map(e => GA.generateRandomADN(1));
+    let Chromos = Array(6).fill("").map(e => GA.generateRandomADN(agenceFortigates.length));
     for (let iteration = 0; iteration < 4; iteration++) {
         console.log("## Iteration ->", iteration)
 
         const contest = {} as { [key: number | string]: any }
 
-        for (let a = 0; a < ADNs.length; a++) {
-            const adn = ADNs[a];
-            console.log("Evaluating ", adn)
-            dcForitgate!.setPortBandwidth(3, adn[0]);
+        for (let a = 0; a < Chromos.length; a++) {
+            const chromo = Chromos[a];
+            console.log("Evaluating ", chromo)
+
+            for (let f = 0; f < agenceFortigates.length; f++) {
+                await agenceFortigates[f].setPortBandwidth(3, chromo[f])
+            }
+
             await delay(1000)
             const stats = await recordDCForitageStats(20);
 
-            contest[Math.floor(GA.fitness(stats.evaluate()))] = adn
+            const chromoEvaluation = GA.fitness(stats.evaluate());
+
+            contest[Math.floor(chromoEvaluation)] = chromo
         }
 
 
-        const a = Object.keys(contest).map(e => parseInt(e));
-        a.sort((a, b) => b - a)
-
-
-        const top = a.slice(0, Math.floor(ADNs.length / 2 + 1));
-
         console.log(contest);
 
+
+
+        // selection
+        const list = Object.keys(contest).map(e => parseInt(e)).sort((a, b) => b - a);
+        const top = list.slice(0, Math.floor(Chromos.length / 2 + 1));
         const selected = top.map(e => contest[e.toString()]);
 
-
-        ADNs = GA.crossOverAll(selected, ADNs.length)
-        ADNs = ADNs.map(e => GA.mutation(e, 0.5))
+        //crossOver
+        Chromos = GA.crossOverAll(selected, Chromos.length)
+        // mutation
+        Chromos = Chromos.map(e => GA.mutation(e, 0.2))
     }
 
 
@@ -133,7 +140,7 @@ async function recordDCForitageStats(seconds: number) {
         for (let i = 0; i < 12000; i++) {
             console.log(i);
             const usage = await dcForitgate!.getResourceUtilization()
-            const bandwidth = await dcForitgate!.getLivePortBandwidthUtilization(3)
+            const bandwidth = await dcForitgate!.getLivePortBandwidthUtilization(2)
             baseline.push(usage.cpu[0].current, bandwidth.tx)
 
             await delay(1000)

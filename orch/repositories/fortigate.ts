@@ -97,7 +97,8 @@ export default class Fortigate {
 
 
     async getLivePortBandwidthUtilization(port: number) {
-        const { data } = await this.http.get(`/monitor/system/traffic-history/interface?interface=port${port}&time_period=hour&vdom=root`)
+        const { data } = await this.http.get(`/monitor/system/traffic-history/interface?interface=port${port}&time_period=hour`)
+
 
         const { results } = JSON.parse(data);
 
