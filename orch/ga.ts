@@ -63,7 +63,7 @@ export function crossOverOne(a: number[], b: number[]) {
 
     }
 
-    return a
+    return c
 }
 
 
