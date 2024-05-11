@@ -63,6 +63,7 @@ async function optimizeDuringPeriod() {
 
 
     let Chromos = Array(6).fill("").map(e => GA.generateRandomADN(agenceFortigates.length));
+    let topOne = [] as any
     for (let iteration = 0; iteration < 4; iteration++) {
         console.log("## Iteration ->", iteration)
 
@@ -94,12 +95,20 @@ async function optimizeDuringPeriod() {
         const top = list.slice(0, Math.floor(Chromos.length / 2 + 1));
         const selected = top.map(e => contest[e.toString()]);
 
+        topOne = selected[0];
+
         //crossOver
         Chromos = GA.crossOverAll(selected, Chromos.length)
         // mutation
         Chromos = Chromos.map(e => GA.mutation(e, 0.2))
     }
 
+
+    for (let f = 0; f < agenceFortigates.length; f++) {
+        await agenceFortigates[f].setPortBandwidth(3, topOne[f])
+    }
+
+    await delay(3)
 
 
 
@@ -138,7 +147,6 @@ async function recordDCForitageStats(seconds: number) {
     await new Promise(async r => {
         const start = Date.now();
         for (let i = 0; i < 12000; i++) {
-            console.log(i);
             const usage = await dcForitgate!.getResourceUtilization()
             const bandwidth = await dcForitgate!.getLivePortBandwidthUtilization(2)
             baseline.push(usage.cpu[0].current, bandwidth.tx)
