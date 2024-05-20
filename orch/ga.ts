@@ -10,7 +10,7 @@ function RandomGene() {
     const kb = 1000;
     const mb = kb * 1000;
 
-    return Math.floor(Math.random() * mb * 10) + kb
+    return Math.floor(Math.random() * mb * 0.05) + kb
 }
 
 export function generateRandomADN(length: number) {
@@ -92,7 +92,7 @@ export function fitness(stats: {
         stdDev: number
     }
 }) {
-    return stats.dataRate.median / (stats.cpu.median + 1)
+    return stats.dataRate.median / (stats.cpu.stdDev + 1)
 }
 
 

@@ -49,6 +49,8 @@ console.log("forigate (" + dcForitgate.hostname + ") found, ip=" + dcForitgate.i
 
 
 
+const history = [] as any[]
+
 async function optimizeDuringPeriod() {
     // start the abusers and keep it durring the entire period
     await CommandAbusers("192.168.0.4");
@@ -62,9 +64,9 @@ async function optimizeDuringPeriod() {
 
 
 
-    let Chromos = Array(6).fill("").map(e => GA.generateRandomADN(agenceFortigates.length));
+    let Chromos = Array(20).fill("").map(e => GA.generateRandomADN(agenceFortigates.length));
     let topOne = [] as any
-    for (let iteration = 0; iteration < 4; iteration++) {
+    for (let iteration = 0; iteration < 10000; iteration++) {
         console.log("## Iteration ->", iteration)
 
         const contest = {} as { [key: number | string]: any }
@@ -77,12 +79,26 @@ async function optimizeDuringPeriod() {
                 await agenceFortigates[f].setPortBandwidth(3, chromo[f])
             }
 
-            await delay(1000)
-            const stats = await recordDCForitageStats(20);
+            await delay(4000)
+            try{
+                const stats = await recordDCForitageStats(30);
 
-            const chromoEvaluation = GA.fitness(stats.evaluate());
-
-            contest[Math.floor(chromoEvaluation)] = chromo
+                const chromoEvaluation = GA.fitness(stats.evaluate());
+    
+                history.push({
+                    iteration,
+                    chomoIndex: a,
+                    stats: stats.evaluate(),
+                    fitness: chromoEvaluation
+                })
+    
+                contest[Math.floor(chromoEvaluation)] = chromo
+    
+                await Bun.write("./stats.json", JSON.stringify(history))
+            }catch(e){
+                continue;
+            }
+            
         }
 
 
@@ -92,7 +108,7 @@ async function optimizeDuringPeriod() {
 
         // selection
         const list = Object.keys(contest).map(e => parseInt(e)).sort((a, b) => b - a);
-        const top = list.slice(0, Math.floor(Chromos.length / 2 + 1));
+        const top = list.slice(0, Math.floor(Chromos.length / 2));
         const selected = top.map(e => contest[e.toString()]);
 
         topOne = selected[0];
@@ -100,7 +116,7 @@ async function optimizeDuringPeriod() {
         //crossOver
         Chromos = GA.crossOverAll(selected, Chromos.length)
         // mutation
-        Chromos = Chromos.map(e => GA.mutation(e, 0.2))
+        Chromos = Chromos.map(e => GA.mutation(e, 0.3))
     }
 
 
@@ -142,6 +158,7 @@ await optimizeDuringPeriod();
 
 
 async function recordDCForitageStats(seconds: number) {
+    
     const baseline = new GA.Stats();
 
     await new Promise(async r => {
