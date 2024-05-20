@@ -92,7 +92,7 @@ export function fitness(stats: {
         stdDev: number
     }
 }) {
-    return stats.dataRate.median / (stats.cpu.stdDev + 1)
+    return stats.dataRate.median / (stats.cpu.median + 1)
 }
 
 
