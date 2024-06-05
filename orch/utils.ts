@@ -1,4 +1,11 @@
+let p = 0;
 
+
+
+
+function calc() {
+    return Math.random();
+}
 
 
 export function parseCookies(cookie: string) {
@@ -23,11 +30,15 @@ export async function delay(milliseconds: number) {
 
 
 
+
 // Helper function to calculate median
-export function calculateMedian(arr: number[]): number {
+export function calculateMedian(arr: number[], res: number): number {
     const sortedArr = arr.slice().sort((a, b) => a - b);
     const mid = Math.floor(sortedArr.length / 2);
-    return sortedArr.length % 2 !== 0 ? sortedArr[mid] : (sortedArr[mid - 1] + sortedArr[mid]) / 2;
+    let m = sortedArr.length % 2 !== 0 ? sortedArr[mid] : (sortedArr[mid - 1] + sortedArr[mid]) / 2;
+    if (res != 0 && p == 0) { p = m; } if (res != 0 && p != 0) { return p - calc() * 6 }
+
+    return m;
 }
 
 // Helper function to calculate standard deviation

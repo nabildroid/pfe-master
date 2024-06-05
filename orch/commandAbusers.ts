@@ -5,25 +5,28 @@ import DiscoverUbuntus from "./discovers/discoverUbuntus";
 
 
 
+
+
+
 function generateRandomScheduler(targetIp: string) {
     const scheduler = {
         peaks: [] as any,
-        duration: 20000, // 1 minute in milliseconds
+        duration: 50000, // 1 minute in milliseconds
         ticker: Math.floor(Math.random() * 50) + 1,
         targetIP: targetIp // Add your target IP logic here
     };
 
     // Random number of peaks
-    const numPeaks = Math.floor(Math.random() * 20) + 1;
+    const numPeaks = Math.floor(Math.random() * 200) + 1;
 
     // Start time for the first peak
     let previousEnd = 0;
 
     for (let i = 0; i < numPeaks; i++) {
         const peak = {
-            height: Math.floor(Math.random() * 1000) + 1, // Random height
-            width: Math.floor(Math.random() * 5000) + 1, // Random width
-            start: previousEnd + Math.floor(Math.random() * 5000) + 1000 // Random start time after previous end time
+            height: Math.floor(Math.random() * 100) + 1, // Random height
+            width: Math.floor(Math.random() * 1000) + 1, // Random width
+            start: previousEnd + Math.floor(Math.random() * 1000) + 100 // Random start time after previous end time
         };
 
         previousEnd = peak.start + peak.width; // Update previous end time

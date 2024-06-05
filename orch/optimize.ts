@@ -48,25 +48,25 @@ console.log("forigate (" + dcForitgate.hostname + ") found, ip=" + dcForitgate.i
 
 
 
-
-const history = [] as any[]
-
 async function optimizeDuringPeriod() {
     // start the abusers and keep it durring the entire period
     await CommandAbusers("192.168.0.4");
-    await delay(2000)
     // record the baseline (cpu utilization), ingress data in the datacenter (one minute)
 
 
+
     console.log("Recording the baseline")
-    const baseline = await recordDCForitageStats(20);
+
+    delay(1000)
+
+    const baseline = await recordDCForitageStats(10, 1);
     console.log("without Opimization", baseline.evaluate());
 
 
 
-    let Chromos = Array(20).fill("").map(e => GA.generateRandomADN(agenceFortigates.length));
+    let Chromos = Array(6).fill("").map(e => GA.generateRandomADN(agenceFortigates.length));
     let topOne = [] as any
-    for (let iteration = 0; iteration < 10000; iteration++) {
+    for (let iteration = 0; iteration < 0; iteration++) {
         console.log("## Iteration ->", iteration)
 
         const contest = {} as { [key: number | string]: any }
@@ -79,26 +79,18 @@ async function optimizeDuringPeriod() {
                 await agenceFortigates[f].setPortBandwidth(3, chromo[f])
             }
 
-            await delay(4000)
-            try{
-                const stats = await recordDCForitageStats(30);
+            await delay(2000)
+            try {
+                const stats = await recordDCForitageStats(10,0);
 
                 const chromoEvaluation = GA.fitness(stats.evaluate());
-    
-                history.push({
-                    iteration,
-                    chomoIndex: a,
-                    stats: stats.evaluate(),
-                    fitness: chromoEvaluation
-                })
-    
+
                 contest[Math.floor(chromoEvaluation)] = chromo
-    
-                await Bun.write("./stats.json", JSON.stringify(history))
-            }catch(e){
+
+            } catch (e) {
                 continue;
             }
-            
+
         }
 
 
@@ -116,7 +108,7 @@ async function optimizeDuringPeriod() {
         //crossOver
         Chromos = GA.crossOverAll(selected, Chromos.length)
         // mutation
-        Chromos = Chromos.map(e => GA.mutation(e, 0.3))
+        Chromos = Chromos.map(e => GA.mutation(e, 0.33))
     }
 
 
@@ -147,7 +139,7 @@ async function optimizeDuringPeriod() {
 
 
     console.log("##########################################")
-    const after = await recordDCForitageStats(60);
+    const after = await recordDCForitageStats(10, 1);
     console.log("without Optimization", baseline.evaluate());
     console.log("with Optimization", after.evaluate());
 }
@@ -157,9 +149,9 @@ await optimizeDuringPeriod();
 
 
 
-async function recordDCForitageStats(seconds: number) {
-    
-    const baseline = new GA.Stats();
+async function recordDCForitageStats(seconds: number, fast: number) {
+
+    const baseline = new GA.Stats(fast);
 
     await new Promise(async r => {
         const start = Date.now();

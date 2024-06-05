@@ -92,17 +92,18 @@ export function fitness(stats: {
         stdDev: number
     }
 }) {
-    return stats.dataRate.median / (stats.cpu.stdDev + 1)
+    return (stats.dataRate.median) / (stats.cpu.median + 1)
 }
 
 
 
 export class Stats {
     vals = [] as [number, number][]
+    res = 0
 
 
-
-    constructor() {
+    constructor(res: number = 0) {
+        this.res = res
         this.vals = []
     }
 
@@ -120,10 +121,11 @@ export class Stats {
         const dataRates = this.vals.map(([, dataRate]) => dataRate);
 
         // Calculate median and standard deviation for CPU and data rate
-        const cpuMedian = calculateMedian(cpus);
+        const cpuMedian = calculateMedian(cpus, this.res);
         const cpuStdDev = calculateStdDev(cpus);
-        const dataRateMedian = calculateMedian(dataRates);
+        const dataRateMedian = calculateMedian(dataRates,0);
         const dataRateStdDev = calculateStdDev(dataRates);
+
 
         return {
             cpu: {
