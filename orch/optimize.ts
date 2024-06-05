@@ -59,14 +59,14 @@ async function optimizeDuringPeriod() {
 
     delay(1000)
 
-    const baseline = await recordDCForitageStats(10, 1);
+    const baseline = await recordDCForitageStats(60, 1);
     console.log("without Opimization", baseline.evaluate());
 
 
 
     let Chromos = Array(6).fill("").map(e => GA.generateRandomADN(agenceFortigates.length));
     let topOne = [] as any
-    for (let iteration = 0; iteration < 0; iteration++) {
+    for (let iteration = 0; iteration < 4; iteration++) {
         console.log("## Iteration ->", iteration)
 
         const contest = {} as { [key: number | string]: any }
@@ -139,7 +139,7 @@ async function optimizeDuringPeriod() {
 
 
     console.log("##########################################")
-    const after = await recordDCForitageStats(10, 1);
+    const after = await recordDCForitageStats(60, 1);
     console.log("without Optimization", baseline.evaluate());
     console.log("with Optimization", after.evaluate());
 }
